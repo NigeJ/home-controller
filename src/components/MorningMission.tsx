@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, type CSSProperties } from 'react'
+import { useIsKiosk } from '../hooks/useIsKiosk'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   CartesianGrid, LineChart, Line,
@@ -373,6 +374,7 @@ export function MorningMission() {
   const [history, setHistory] = useState<HistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
 
+  const isKiosk = useIsKiosk()
   const key = todayKey()
   const today = dayName()
   const isWeekday = !['Saturday', 'Sunday'].includes(today)
@@ -454,7 +456,7 @@ export function MorningMission() {
       <TabBar tab={tab} setTab={setTab} />
 
       {tab === 'today' ? (
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: isKiosk ? 'hidden' : 'visible' }}>
           {!dayData.wakeUpTime ? (
             <WakeUpPrompt onSet={setWakeUp} />
           ) : (
@@ -470,7 +472,7 @@ export function MorningMission() {
           {isWeekday && !allDone && <Countdown />}
           <ProgressBar done={doneCount} total={TASKS.length} />
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, overflow: isKiosk ? 'hidden' : 'visible' }}>
             {TASKS.map(task => (
               <TaskButton
                 key={task.id}

@@ -150,10 +150,10 @@ export function HeatPumpControl({ heatPump, heatTransfer, callService }: Props) 
       display: 'flex', flexDirection: 'column', gap: 14,
     }}>
       {/* Main row: dial + modes + fan */}
-      <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'flex-start' }}>
+      <div className="hp-main-row" style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'flex-start' }}>
 
         {/* Circular dial */}
-        <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className="hp-dial" style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <svg width={D} height={D} style={{ overflow: 'visible' }}>
             {/* Background track */}
             <path d={arc(SWEEP)} fill="none" stroke="var(--border)" strokeWidth={TRACK_W} strokeLinecap="round" />
@@ -193,8 +193,12 @@ export function HeatPumpControl({ heatPump, heatTransfer, callService }: Props) 
           </div>
         </div>
 
+        {/* Mode + fan columns — display:contents on desktop lets them be direct flex children;
+               on mobile CSS overrides to display:flex so they sit side-by-side below the dial */}
+        <div className="hp-columns-wrap" style={{ display: 'contents' }}>
+
         {/* Mode selector */}
-        <div style={{ flex: '0 0 148px', display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div className="hp-col" style={{ flex: '0 0 148px', display: 'flex', flexDirection: 'column', gap: 3 }}>
           <div style={colHeader}>Mode</div>
           {modes.map(m => {
             const active = mode === m && isOn
@@ -211,7 +215,7 @@ export function HeatPumpControl({ heatPump, heatTransfer, callService }: Props) 
         </div>
 
         {/* Fan speed selector */}
-        <div style={{ flex: '0 0 148px', display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <div className="hp-col" style={{ flex: '0 0 148px', display: 'flex', flexDirection: 'column', gap: 3 }}>
           <div style={colHeader}>Fan</div>
           {Object.entries(FAN_MODE_MAP)
             .filter(([haKey]) => fanModes.length === 0 || fanModes.includes(haKey))
@@ -229,10 +233,11 @@ export function HeatPumpControl({ heatPump, heatTransfer, callService }: Props) 
             })}
         </div>
 
+        </div>{/* end hp-columns-wrap */}
       </div>
 
       {/* Bottom row: power + transfer fan + current temp */}
-      <div style={{
+      <div className="hp-bottom-row" style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         paddingTop: 12, borderTop: '1px solid var(--border)', gap: 8,
       }}>
