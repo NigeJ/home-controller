@@ -192,19 +192,33 @@ function TaskButton({ task, isDone, isRecent, onToggle }: {
 }
 
 function WakeUpPrompt({ onSet }: { onSet: (time: string) => void }) {
-  const [h, setH] = useState('7')
-  const [m, setM] = useState('00')
+  const now = new Date()
+  const isAfter11 = now.getHours() >= 11
+  const defaultH = isAfter11 ? 11 : now.getHours()
+  const defaultM = isAfter11 ? 0 : Math.round(now.getMinutes() / 5) * 5 % 60
+  const [h, setH] = useState(defaultH.toString())
+  const [m, setM] = useState(defaultM.toString().padStart(2, '0'))
+
   const sel: CSSProperties = {
     background: C.surface, color: C.text, border: `1px solid ${C.dim}`,
     borderRadius: 8, padding: '8px 12px', fontSize: 20, fontWeight: 700,
     textAlign: 'center', outline: 'none', cursor: 'pointer', width: 70,
   }
+
   return (
     <div style={{ background: C.card, borderRadius: 14, padding: 16, marginBottom: 14, textAlign: 'center', flexShrink: 0 }}>
       <div style={{ fontSize: 13, color: C.muted, marginBottom: 10 }}>⏰ What time did you wake up?</div>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+        <button
+          onClick={() => onSet(`${h}:${m.padStart(2, '0')}`)}
+          style={{
+            background: C.green, color: C.bg, border: 'none', borderRadius: 10,
+            padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
+            minHeight: 0,
+          }}
+        >Awake @</button>
         <select value={h} onChange={e => setH(e.target.value)} style={sel}>
-          {[5, 6, 7, 8, 9].map(v => <option key={v} value={v}>{v}</option>)}
+          {[5, 6, 7, 8, 9, 10, 11].map(v => <option key={v} value={v}>{v}</option>)}
         </select>
         <span style={{ fontSize: 24, fontWeight: 700, color: C.muted }}>:</span>
         <select value={m} onChange={e => setM(e.target.value)} style={sel}>
@@ -212,14 +226,6 @@ function WakeUpPrompt({ onSet }: { onSet: (time: string) => void }) {
             <option key={v} value={v}>{v}</option>
           ))}
         </select>
-        <button
-          onClick={() => onSet(`${h}:${m.padStart(2, '0')}`)}
-          style={{
-            background: C.green, color: C.bg, border: 'none', borderRadius: 10,
-            padding: '10px 20px', fontSize: 16, fontWeight: 700, cursor: 'pointer',
-            marginLeft: 8, minHeight: 0,
-          }}
-        >Go</button>
       </div>
     </div>
   )
